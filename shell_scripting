@@ -1,0 +1,20 @@
+cd -    //take you to the previous directory. ...again cd - // to the curreny directory
+cd ~    // take you to the home directory 
+ls -l.  //gives you an additional informations about the files
+drwxrwxr-x+    // first three owner of the file .. // permissions for the group owner ..// last three group of permission is 
+for everyone else. [anyone who is not user owner or group owner]
+you can not remove directory by using rm command. it should be recursive remove with -r flag rm -r ...if you want forcefully rm -rf 
+Streams --> Input Stream and Output stream
+echo hello > hello.txt
+cat hello.txt
+cat < hello.txt --- It will take the input from the file and print the same to the terminal
+you can use both the symbole < and >
+Instead of copy ....do this ... cat < hello.txt > hello2.txt
+>> append the content instead of overwrite.
+cat < hello.txt >> hello2.txt
+now hello2.txt will contain 2 hello
+|   ... pipe takes the input of the left program and provide the output to the right program.
+ls -l / | tail -n1
+pipe wires them together.
+ls -l / | tail -n2 > ls.txt
+curl --head --silent google.com
