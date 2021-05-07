@@ -18,3 +18,5 @@ ls -l / | tail -n1
 pipe wires them together.
 ls -l / | tail -n2 > ls.txt
 curl --head --silent google.com
+curl --head --silent google.com | grep --ignore-case or -i content-length
+curl --head --silent google.com | grep -i content-length | cut --delimiter=' ' -f2 
