@@ -20,3 +20,56 @@ ls -l / | tail -n2 > ls.txt
 curl --head --silent google.com
 curl --head --silent google.com | grep --ignore-case or -i content-length
 curl --head --silent google.com | grep -i content-length | cut --delimiter=' ' -f2 
+Root usre is having uid = 0
+sudo --> do the following things as super user
+cd /sys --> kernel parameters
+cd /sys/class --> cd /sys/class/intel_backlight --> cat brightness --> 1060 ...you can increase or decrease the brightness after adjusting this value.
+echo 500 > brightness
+sudo su 
+echo 500 > brightness
+tee command takes an input and write into a file and also to standard out
+echo 1060 | sudo tee brightness
+echo 1 | sudo tee brightness
+xdg-open lectures.html in linux it is open lectures.html
+spaces are reserved for seperating the arguments.
+foo=bar
+echo $foo
+
+mcd () {
+mkdir -p "$1"
+cd "$1"
+}
+
+this file is created as mcd.sh >> execute source mcd.sh >> mcd test
+
+test is the argument given.
+
+With the help of mkdir -p command you can create sub-directories of a directory. It will create parent directory first,
+If it doesn't exist. But if it already exists, then it will not print an error message and will move further to create sub-directories.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
