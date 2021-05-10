@@ -1,0 +1,21 @@
+$0 expands to the name of the shell or shell script. This is set at shell initialization.
+echo $? will return the exit status or error code of the last executed command.
+$_   last argument of the previous command
+If bash is invoked with a file of commands, $0 is set to the name of that file. It is often used to display script usage message:
+!!
+sudo !!
+true >> $?
+false >> $?
+false || echo "Oops Fails"
+true || echo "Will not be printed"
+true && echo "Things went well"
+Value 127 is returned by /bin/sh when the given command is not found within your PATH system variable and it is not a built-in shell command. In other words, 
+The system doesn't understand youre command, because it doesn't know where to find the binary you're trying to call
+false ; echo "This will always print"
+foo=$(pwd)... storing pwd output into foo variable.
+echo $foo
+echo "We are in $(pwd)"... double quote
+sudo find -L /sys/class/blacklight -maxdepth 2 -name '*brightness*'
+cd /sys/class/backlight/thinkpad_screen
+concatenate the current and last folder ls output.
+cat < (ls) < (ls ..)
