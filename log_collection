@@ -1,0 +1,67 @@
+#!/bin/bash
+set -ex
+pushd /shared/haproxy-logs
+log="haproxy.log"
+dest_host="pcaslsl007"
+tgtdir="/shared/logs-rancher-nragent/"
+haproxy_logs() {
+echo "Backup the HAProxy logs"
+find . -type f -mtime +2 -exec rm -f {} \;
+SERVICE=docker
+ID=$(docker ps -a | grep 'lb-service-haproxy' | awk '{print $1}'| wc -l)
+if P=$(pgrep $SERVICE) ; then
+echo "$SERVICE is running, PID is $P "
+if [ "$ID" = "1" ];then
+echo "haproxy container is running"
+else
+echo "haproxy container is not running"
+fi
+host=$(hostname)
+if [[ "$host" == "pcaslsl012" ]];then
+lb1=$(docker ps --format '{{.Names}}' | awk -F "r-platform-loadbalancer-" '/r-platform-loadbalancer-/{print $2}' | cut -f1,2 -d-)
+cid=$(docker ps -a| grep 'lb-service-haproxy' | awk '{print $1}')
+if [[ "$lb1" == "platformlb-1" ]]; then
+docker cp $cid:/var/log/$log  /shared/haproxy-logs/$host-$lb1-$(date -d "yesterday" '+%m-%d-%Y').log
+else
+docker cp $cid:/var/log/$log  /shared/haproxy-logs/$host-platformlb-2-$(date -d "yesterday" '+%m-%d-%Y').log
+fi
+if [[ $? -eq 0 ]];then
+echo "file has been copied"
+else
+echo "file is not there in container"
+fi
+elif [[ "$host" == "pcaslsl013" ]];then
+lb2=$(docker ps --format '{{.Names}}' | awk -F "r-platform-loadbalancer-" '/r-platform-loadbalancer-/{print $2}' | cut -f1,2 -d-)
+cid=$(docker ps -a| grep 'lb-service-haproxy' | awk '{print $1}')
+if [[ "$lb2" == "platformlb-2" ]];then
+docker cp $cid:/var/log/$log  /shared/haproxy-logs/$host-$lb2-$(date -d "yesterday" '+%m-%d-%Y').log
+else
+docker cp $cid:/var/log/$log /shared/haproxy-logs/$host-platformlb-1-$(date -d "yesterday" '+%m-%d-%Y').log
+fi
+if [[ $? -eq 0 ]]; then
+echo "file has been copied"
+else
+echo "file is not there in container"
+fi
+else "Host is differ"
+fi
+else
+echo "$SERVICE is not running"
+fi
+}
+clearing_old_logs () {
+docker exec $cid /bin/bash -c "echo > /var/log/haproxy.log"
+echo "old log has truncated"
+}
+copy_to_shared_folder () {
+logs_file=$(find . -name '*.log' -mmin -30)
+for i in $logs_file;
+do
+scp -r $logs_file root@$dest_host:$tgtdir 2>> /shared/scperror.log \
+  && echo "$logs_file is copied to $tgtdir" \
+  || echo "scp error: $logs_file"
+done
+}
+haproxy_logs
+clearing_old_logs
+copy_to_shared_folder
